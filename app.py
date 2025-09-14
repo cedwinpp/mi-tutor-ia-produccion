@@ -19,9 +19,19 @@ app = Flask(__name__)
 # Configurar una clave secreta para la sesión
 app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
 
-# Configurar la URI de la base de datos. Usa DATABASE_URL si está definida (para producción),
-# si no, usa una base de datos SQLite local.
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///tutor_ia.db')
+# 🚨 IMPORTANTE: Usa el dialecto 'postgresql+psycopg' para psycopg3
+database_url = os.getenv('DATABASE_URL')
+if not database_url:
+    # Fallback a SQLite para desarrollo local
+    database_url = 'sqlite:///tutor_ia.db'
+else:
+    # Asegura que la URL use el nuevo dialecto para psycopg3
+    if database_url.startswith('postgresql://'):
+        database_url = database_url.replace('postgresql://', 'postgresql+psycopg://', 1)
+    elif database_url.startswith('postgres://'):
+        database_url = database_url.replace('postgres://', 'postgresql+psycopg://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Contraseña de administrador
@@ -216,5 +226,5 @@ def admin_create_prompt():
 
 if __name__ == '__main__':
     with app.app_context():
-        db.create_all() # Crea las tablas si no existen
+        db.create_all()  # Crea las tablas si no existen
     app.run(debug=True, port=8000)
