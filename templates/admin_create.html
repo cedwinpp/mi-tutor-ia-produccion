@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Prompt - Admin</title>
+</head>
+<body>
+    <h1>Crear Nuevo Prompt</h1>
+    <form method="post">
+        <label for="student_email">Email del Alumno:</label><br>
+        <input type="email" id="student_email" name="student_email" required><br><br>
+        
+        <label for="topic">Tema:</label><br>
+        <input type="text" id="topic" name="topic" required><br><br>
+        
+        <label for="prompt_content">Contenido del Prompt:</label><br>
+        <textarea id="prompt_content" name="prompt_content" rows="10" cols="50" required></textarea><br><br>
+
+        <label for="exercises_text">Ejercicios (uno por línea, en orden de dificultad creciente):</label><br>
+        <textarea id="exercises_text" name="exercises_text" rows="15" cols="70"></textarea><br><br>
+        
+        <button type="submit">Generar Clave y Guardar</button>
+    </form>
+    
+    {% if access_key %}
+        <h2>Clave de Acceso Generada:</h2>
+        <p>{{ access_key }}</p>
+    {% endif %}
+</body>
+</html>
