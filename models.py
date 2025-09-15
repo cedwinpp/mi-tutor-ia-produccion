@@ -2,6 +2,10 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 import datetime
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .models import Prompt, PredefinedExercise  # Solo para tipo, no se ejecuta en runtime
 
 db = SQLAlchemy()
 
@@ -15,8 +19,12 @@ class Prompt(db.Model):
     session_start_time = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     
-    # Relationship to predefined exercises
-    predefined_exercises = relationship("PredefinedExercise", back_populates="prompt")
+    # ✅ USO CORRECTO: referencia a clase sin importación circular
+    predefined_exercises = relationship(
+        "PredefinedExercise",
+        back_populates="prompt",
+        lazy="select"
+    )
 
 class ExerciseHistory(db.Model):
     __tablename__ = 'exercise_history'
@@ -35,5 +43,9 @@ class PredefinedExercise(db.Model):
     exercise_text = db.Column(db.Text, nullable=False)
     order_in_list = db.Column(db.Integer, nullable=False)
     
-    # Relationship to prompt
-    prompt = relationship("Prompt", back_populates="predefined_exercises")
+    # ✅ USO CORRECTO: referencia a clase sin importación circular
+    prompt = relationship(
+        "Prompt",
+        back_populates="predefined_exercises",
+        lazy="select"
+    )

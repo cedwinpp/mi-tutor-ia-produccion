@@ -7,21 +7,21 @@ import logging
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from dotenv import load_dotenv
 from openai import OpenAI
+
+# ✅ IMPORTA LOS MODELOS PRIMERO (esto carga db = SQLAlchemy())
 from models import db, Prompt, ExerciseHistory, PredefinedExercise
 
-# Cargar variables de entorno desde .env
 load_dotenv()
 
+# ✅ CREA LA APP DESPUÉS DE IMPORTAR MODELOS
 app = Flask(__name__)
 app.secret_key = os.getenv('FLASK_SECRET_KEY', os.urandom(24))
 
-# ✅ CONFIGURACIÓN CRÍTICA PARA RENDER - NO MODIFICAR
+# ✅ CONFIGURA LA BASE DE DATOS
 database_url = os.getenv('DATABASE_URL')
 if not database_url:
-    # Usa SQLite como fallback (solo para desarrollo local)
     database_url = 'sqlite:///tutor_ia.db'
 else:
-    # Convierte postgresql:// o postgres:// → postgresql+psycopg:// para usar psycopg3
     if database_url.startswith('postgresql://'):
         database_url = database_url.replace('postgresql://', 'postgresql+psycopg://', 1)
     elif database_url.startswith('postgres://'):
@@ -30,22 +30,20 @@ else:
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Variables de configuración
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
 SESSION_TIME_LIMIT_MINUTES = 30
 
-# ✅ ¡CRUCIAL: Crear tablas SIEMPRE al iniciar la app, incluso bajo Gunicorn!
+# ✅ ¡CRUCIAL: INICIALIZA db CON app ANTES DE CUALQUIER USO!
+db.init_app(app)
+
+# ✅ AHORA SÍ, CREA LAS TABLAS EN UN CONTEXTOS DE APLICACIÓN
 with app.app_context():
     db.create_all()
 
-# Inicializar SQLAlchemy con la app
-db.init_app(app)
-
-# Configurar logging
+# ✅ INICIALIZA CLIENTE DE OPENAI
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Inicializar cliente de OpenAI
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # === [TU LÓGICA ORIGINAL A PARTIR DE AQUÍ — SIN CAMBIOS] ===
