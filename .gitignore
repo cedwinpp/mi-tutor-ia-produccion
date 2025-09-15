@@ -1,4 +1,7 @@
+.python-version
+runtime.txt
+poetry.lock
+pyproject.toml
 .env
-venv/
 __pycache__/
-*.sqlite
+*.pyc
