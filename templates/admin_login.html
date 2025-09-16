@@ -15,7 +15,7 @@
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <form method="post">
+        <form method="post" action="{{ url_for('admin_login') }}"></form>
             <div class="form-group">
                 <label for="password">Contraseña:</label>
                 <input type="password" id="password" name="password" required>
