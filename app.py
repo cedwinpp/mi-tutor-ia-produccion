@@ -3,6 +3,7 @@ import secrets
 import string
 import re
 import datetime
+from datetime import timezone
 import logging
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from dotenv import load_dotenv
@@ -130,7 +131,7 @@ def api_chat():
         if not prompt:
             return jsonify({'ai_response': 'Error: Clave de acceso no válida.'})
         
-        time_elapsed = datetime.datetime.utcnow() - prompt.session_start_time
+        time_elapsed = datetime.datetime.now(timezone.utc) - prompt.session_start_time
         if time_elapsed.total_seconds() > SESSION_TIME_LIMIT_MINUTES * 60:
             return jsonify({'ai_response': 'Tu sesión ha expirado. Por favor, contacta a tu tutor para una nueva sesión.'})
 
@@ -207,7 +208,7 @@ def admin_create_prompt():
                     topic=topic,
                     prompt_content=prompt_content,
                     access_key=access_key,
-                    session_start_time=datetime.datetime.utcnow()
+                    session_start_time=datetime.datetime.now(timezone.utc)
                 )
                 db.session.add(new_prompt)
                 db.session.commit()
