@@ -168,64 +168,78 @@ def admin():
 # Login de administrador
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
-    if request.method == 'GET':
-        return render_template('admin_login.html')
-    
-    password = request.form.get('password')
-    if password == ADMIN_PASSWORD:
-        session['logged_in'] = True
-        flash('Acceso concedido.', 'success')
-        return redirect(url_for('admin'))
-    else:
-        flash('Contraseña incorrecta.', 'error')
-        return redirect(url_for('admin'))
+    if request.method == 'POST':
+        password = request.form['password']
+        if password == ADMIN_PASSWORD:
+            session['logged_in'] = True
+            flash('Inicio de sesión exitoso.', 'success')
+            return redirect(url_for('admin_create_prompt'))
+        else:
+            flash('Contraseña incorrecta.', 'danger')
+    return render_template('admin_login.html')
 
 # Logout
 @app.route('/admin/logout')
 def admin_logout():
     session.pop('logged_in', None)
-    flash('Sesión cerrada.', 'info')
-    return redirect(url_for('admin'))
+    flash('Has cerrado la sesión.', 'info')
+    return redirect(url_for('admin_login'))
 
 # Crear prompt desde el admin
 @app.route('/admin/create_prompt', methods=['GET', 'POST'])
-def create_prompt():
+def admin_create_prompt():
     if not session.get('logged_in'):
-        return redirect(url_for('admin'))
+        return redirect(url_for('admin_login'))
 
     if request.method == 'POST':
-        student_email = request.form.get('student_email').strip()
-        topic = request.form.get('topic').strip()
-        prompt_content = request.form.get('prompt_content').strip()
-
+        student_email = request.form['student_email'].strip()
+        topic = request.form['topic'].strip()
+        prompt_content = request.form['prompt_content'].strip()
+        exercises_text = request.form.get('exercises_text', '').strip()
+        
         if not all([student_email, topic, prompt_content]):
-            flash('Todos los campos son obligatorios.', 'error')
-            return render_template('admin_create.html')
+            flash("Todos los campos marcados con * son obligatorios.", "danger")
+        else:
+            try:
+                access_key = generate_unique_access_key()
+                new_prompt = Prompt(
+                    student_email=student_email,
+                    topic=topic,
+                    prompt_content=prompt_content,
+                    access_key=access_key,
+                    session_start_time=datetime.datetime.utcnow()
+                )
+                db.session.add(new_prompt)
+                db.session.commit()
 
-        # Validar email simple
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", student_email):
-            flash('Email inválido.', 'error')
-            return render_template('admin_create.html')
+                exercise_lines = exercises_text.split('\n') if exercises_text else []
+                added_exercises = 0
+                for i, line in enumerate(exercise_lines):
+                    if line.strip():
+                        new_exercise = PredefinedExercise(
+                            prompt_id=new_prompt.id,
+                            exercise_text=line.strip(),
+                            order_in_list=i + 1
+                        )
+                        db.session.add(new_exercise)
+                        added_exercises += 1
+                
+                if added_exercises > 0:
+                    db.session.commit()
 
-        # Generar clave única
-        access_key = generate_unique_access_key()
-        while Prompt.query.filter_by(access_key=access_key).first():
-            access_key = generate_unique_access_key()
+                success_message = f"Prompt creado exitosamente. Clave de acceso: {access_key}"
+                if added_exercises > 0:
+                    success_message += f". Se agregaron {added_exercises} ejercicios predefinidos."
+                flash(success_message, "success")
+                return redirect(url_for('admin_create_prompt'))
 
-        # Crear prompt en DB
-        new_prompt = Prompt(
-            student_email=student_email,
-            topic=topic,
-            prompt_content=prompt_content,
-            access_key=access_key
-        )
-        db.session.add(new_prompt)
-        db.session.commit()
-
-        flash(f'Prompt creado exitosamente. Clave de acceso: {access_key}', 'success')
-        return redirect(url_for('create_prompt'))
-
+            except Exception as e:
+                db.session.rollback()
+                logger.error(f"Error al crear el prompt: {e}")
+                flash("Error al crear el prompt. Por favor, intenta nuevamente.", "danger")
+        
     return render_template('admin_create.html')
+
 
 # Endpoint para generar ejercicio con IA
 @app.route('/generate_exercise', methods=['POST'])
