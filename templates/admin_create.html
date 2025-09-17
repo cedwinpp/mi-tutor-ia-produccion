@@ -2,29 +2,79 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Prompt - Admin</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 40px;
+        }
+        .container {
+            max-width: 800px;
+        }
+        textarea {
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .alert {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Crear Nuevo Prompt</h1>
-    <form method="post">
-        <label for="student_email">Email del Alumno:</label><br>
-        <input type="email" id="student_email" name="student_email" required><br><br>
-        
-        <label for="topic">Tema:</label><br>
-        <input type="text" id="topic" name="topic" required><br><br>
-        
-        <label for="prompt_content">Contenido del Prompt:</label><br>
-        <textarea id="prompt_content" name="prompt_content" rows="10" cols="50" required></textarea><br><br>
 
-        <label for="exercises_text">Ejercicios (uno por línea, en orden de dificultad creciente):</label><br>
-        <textarea id="exercises_text" name="exercises_text" rows="15" cols="70"></textarea><br><br>
-        
-        <button type="submit">Generar Clave y Guardar</button>
+<div class="container">
+    <h1 class="text-center mb-4">✨ Crear Nuevo Prompt para Tutoría</h1>
+
+    <!-- 👇 MOSTRAR MENSAJES FLASH (CLAVE DE ACCESO Y ERRORES) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="post" class="p-4 bg-white rounded shadow">
+        <div class="mb-3">
+            <label for="student_email" class="form-label">📧 Email del Alumno *</label>
+            <input type="email" id="student_email" name="student_email" class="form-control" required placeholder="ejemplo@estudiante.edu">
+        </div>
+
+        <div class="mb-3">
+            <label for="topic" class="form-label">📚 Tema *</label>
+            <input type="text" id="topic" name="topic" class="form-control" required placeholder="Matemáticas - Ecuaciones Lineales">
+        </div>
+
+        <div class="mb-3">
+            <label for="prompt_content" class="form-label">💬 Contenido del Prompt (Instrucciones para la IA) *</label>
+            <textarea id="prompt_content" name="prompt_content" class="form-control" rows="6" required placeholder="Eres un tutor experto en matemáticas. Explica paso a paso cómo resolver cualquier ejercicio. Usa lenguaje amable y claro.">
+            </textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="exercises_text" class="form-label">📝 Ejercicios (uno por línea, en orden creciente de dificultad)</label>
+            <textarea id="exercises_text" name="exercises_text" class="form-control" rows="8" placeholder="Resuelve: 2x + 3 = 7
+Resuelve: 5(x - 2) = 3x + 4
+Encuentra x si 3x² - 12 = 0"></textarea>
+            <small class="text-muted">Cada ejercicio debe estar en una línea separada.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100">✅ Generar Clave y Guardar Prompt</button>
     </form>
-    
-    {% if access_key %}
-        <h2>Clave de Acceso Generada:</h2>
-        <p>{{ access_key }}</p>
-    {% endif %}
+
+    <div class="mt-5 text-center text-muted">
+        <small>🔒 Solo accesible para administradores</small>
+    </div>
+</div>
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
