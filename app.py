@@ -66,8 +66,11 @@ def admin():
         return render_template('admin_login.html')
 
 # Login de administrador
-@app.route('/admin/login', methods=['POST'])
+@app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
+    if request.method == 'GET':
+        return render_template('admin_login.html')
+    
     password = request.form.get('password')
     if password == ADMIN_PASSWORD:
         session['logged_in'] = True
