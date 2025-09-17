@@ -109,11 +109,14 @@ def chat(access_key):
     
     exercises = [{'exercise': ex_text, 'solution': ''} for ex_text in exercises_from_db]
     
+    initial_message = "¡Hola! Soy tu tutor de IA. Estoy aquí para ayudarte con tus ejercicios. Puedes seleccionar un ejercicio de la lista o escribir uno tú mismo."
+
     return render_template('chat.html', 
                          exercises=exercises, 
                          session_start_time=session_start_time.isoformat(),
                          session_end_time=session_end_time.isoformat(),
-                         access_key=access_key)
+                         access_key=access_key,
+                         initial_message=initial_message)
 
 @app.route('/api/chat', methods=['POST'])
 def api_chat():
@@ -134,6 +137,8 @@ def api_chat():
         system_prompt = prompt.prompt_content
         if action == "get_solution":
             ai_response = get_ai_response(system_prompt + "\n\nPor favor, proporciona la solución paso a paso para el siguiente ejercicio:", user_message)
+        elif action == "initial_message":
+            ai_response = get_ai_response(system_prompt, "Hola, por favor, preséntate y saluda al alumno. Adicionalmente, indícale que puede seleccionar uno de los ejercicios de la lista de la izquierda o escribir uno directamente en el chat. Si no hay ejercicios, indícale que puede escribir uno directamente en el chat.")
         else:
             ai_response = get_ai_response(system_prompt, user_message)
         

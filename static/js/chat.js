@@ -28,6 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1000);
     }
 
+    window.addEventListener('load', () => {
+        const initialMessage = "Hola"; // O cualquier otro mensaje inicial
+        sendChatMessage(initialMessage, "initial_message");
+    });
+
     // Handle "Mostrar Solución" buttons in the exercise list
     const exerciseSolutionButtons = document.querySelectorAll('#exercises-ul .show-solution-button');
     exerciseSolutionButtons.forEach(button => {
