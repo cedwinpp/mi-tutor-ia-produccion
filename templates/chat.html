@@ -12,7 +12,7 @@
     <div class="header-branding">
         <!-- Placeholder para el logo -->
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo del Tutor" class="app-logo">
-        <div id="timer" data-end-time="{{ session_end_time }}"></div>
+        <div id="timer" data-remaining-seconds="{{ remaining_seconds }}"></div>
         <!-- Título personalizado (eliminado) -->
         <!-- <h1 class="app-title">Mi Tutor Inteligente</h1> -->
     </div>

@@ -115,6 +115,7 @@ def chat(access_key):
         session_start_time = prompt.session_start_time
 
     session_end_time = session_start_time + datetime.timedelta(minutes=SESSION_TIME_LIMIT_MINUTES)
+    remaining_seconds = max(0, (session_end_time - datetime.datetime.utcnow()).total_seconds())
 
     # Recuperar ejercicios a través de la relación de SQLAlchemy
     exercises_from_db = [exercise.exercise_text for exercise in prompt.predefined_exercises]
@@ -127,8 +128,7 @@ def chat(access_key):
 
     return render_template('chat.html', 
                          exercises=exercises, 
-                         session_start_time=session_start_time.isoformat(),
-                         session_end_time=session_end_time.isoformat(),
+                         remaining_seconds=remaining_seconds,
                          access_key=access_key,
                          initial_message=initial_message)
 

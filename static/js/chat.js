@@ -7,20 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función del temporizador
     if (timerElement) {
-        const endTime = new Date(timerElement.dataset.endTime).getTime();
+        let remainingSeconds = parseInt(timerElement.dataset.remainingSeconds, 10);
 
         const timerInterval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = endTime - now;
-
-            if (distance < 0) {
+            if (remainingSeconds <= 0) {
                 clearInterval(timerInterval);
                 timerElement.innerHTML = "Sesión Expirada";
                 return;
             }
 
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            remainingSeconds--;
+
+            const minutes = Math.floor(remainingSeconds / 60);
+            const seconds = remainingSeconds % 60;
 
             timerElement.innerHTML = `Tiempo restante: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }, 1000);
