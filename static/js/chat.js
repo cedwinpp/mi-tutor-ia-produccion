@@ -70,6 +70,14 @@ document.addEventListener('DOMContentLoaded', () => {
             payload.action = action;
         }
 
+        // Muestra el indicador de "Escribiendo..."
+        const typingIndicator = document.createElement('div');
+        typingIndicator.classList.add('message', 'assistant-message');
+        typingIndicator.id = 'typing-indicator';
+        typingIndicator.innerText = 'Escribiendo...';
+        chatContainer.appendChild(typingIndicator);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
         const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
@@ -77,6 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify(payload),
         });
+
+        // Oculta el indicador
+        document.getElementById('typing-indicator').remove();
 
         const data = await response.json();
         appendMessage('assistant', data.ai_response, action);

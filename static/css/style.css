@@ -1,76 +1,65 @@
-
+/* --- General --- */
 body {
-    font-family: 'Roboto', 'Open Sans', sans-serif; /* Fuente limpia */
+    font-family: 'Lato', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    margin: 0;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 0;
-    padding: 20px;
-    background-color: #f4f7f6; /* Fondo suave */
-    color: #333;
 }
 
+/* --- Contenedores Principales --- */
 .header-branding {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-bottom: 20px;
-    padding: 15px 20px; /* Reducir padding vertical */
+    padding: 15px 20px;
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px B20px rgba(0, 0, 0, 0.08);
     width: 90%;
     max-width: 1400px;
 }
 
-.app-logo {
-    max-width: 300px; /* Tamaño máximo para el logo */
-    height: auto; /* Mantener la proporción */
-    margin-bottom: 10px;
-    border-radius: 8px; /* Bordes ligeramente redondeados */
-    object-fit: contain; /* Asegura que la imagen se ajuste sin recortarse */
-}
-
-/* Eliminado: .app-title */
-/* Eliminado: h1 (el que decía "Chat con tu Tutor") */
-
-h1 { /* Este es el "Chat con tu Tutor" */
-    color: #2c3e50;
-    margin-bottom: 20px;
-    font-size: 2.2em;
-    font-weight: 600;
-}
-
 #main-container {
     display: flex;
-    width: 90%; /* Más ancho */
-    max-width: 1400px; /* Mayor ancho máximo */
+    width: 90%;
+    max-width: 1400px;
     margin: 20px auto;
     background-color: #ffffff;
     border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Sombra más pronunciada */
-    overflow: hidden; /* Para bordes redondeados */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
 }
 
+/* --- Logo y Títulos --- */
+.app-logo {
+    max-width: 300px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #34495e;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 10px;
+    margin-top: 0;
+}
+
+/* --- Lista de Ejercicios --- */
 #exercise-list-container {
     flex: 1;
     padding: 25px;
-    border-right: 1px solid #e0e0e0; /* Separador sutil */
+    border-right: 1px solid #e0e0e0;
     overflow-y: auto;
-    background-color: #fdfdfd; /* Ligeramente diferente */
-}
-
-#exercise-list-container h2 {
-    color: #34495e;
-    margin-bottom: 15px;
-    font-size: 1.6em;
-    font-weight: 500;
-    border-bottom: 2px solid #e0e0e0; /* Subrayado sutil */
-    padding-bottom: 10px;
+    background-color: #fdfdfd;
 }
 
 #exercises-ul {
-    list-style: none; /* Eliminar viñetas */
+    list-style: none;
     padding: 0;
     margin: 0;
 }
@@ -89,26 +78,7 @@ h1 { /* Este es el "Chat con tu Tutor" */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-#exercises-ul li p {
-    margin: 0 0 10px 0;
-    line-height: 1.5;
-}
-
-#exercises-ul .show-solution-button {
-    background-color: #4CAF50; /* Verde más amigable */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 8px 15px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s ease;
-}
-
-#exercises-ul .show-solution-button:hover {
-    background-color: #45a049;
-}
-
+/* --- Interfaz de Chat --- */
 #chat-interface-container {
     flex: 2;
     display: flex;
@@ -124,81 +94,76 @@ h1 { /* Este es el "Chat con tu Tutor" */
     padding: 15px;
     margin-bottom: 15px;
     background-color: #fefefe;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Sombra interior */
 }
 
 .message {
-    padding: 12px;
-    border-radius: 10px;
+    padding: 12px 18px;
+    border-radius: 18px;
     margin-bottom: 12px;
-    max-width: 85%; /* Mensajes más anchos */
+    max-width: 85%;
     line-height: 1.6;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.message p {
-    margin-bottom: 0.8em; /* Ajuste de espaciado */
-}
-
-/* Estilo para resaltar las ecuaciones de MathJax */
-.message mjx-container {
-    background-color: #eef2f5; /* Fondo más claro para ecuaciones */
-    padding: 0.6em;
-    border-radius: 6px;
-    margin: 1em 0;
-    display: block; /* Para que ocupe su propia línea */
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
 .user-message {
-    background-color: #dcf8c6; /* Verde claro */
+    background-color: #007bff;
+    color: white;
     align-self: flex-end;
-    border-bottom-right-radius: 2px; /* Esquina más aguda */
+    margin-left: auto; /* Alinea a la derecha */
+    border-bottom-right-radius: 4px;
 }
 
 .assistant-message {
-    background-color: #e0e6eb; /* Gris azulado claro */
+    background-color: #e9e9eb;
+    color: #333;
     align-self: flex-start;
-    border-bottom-left-radius: 2px; /* Esquina más aguda */
+    margin-right: auto; /* Alinea a la izquierda */
+    border-bottom-left-radius: 4px;
 }
 
+/* --- Formularios y Botones --- */
 #chat-form {
     display: flex;
     width: 100%;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 #user-message {
     flex-grow: 1;
     padding: 12px 15px;
-    border: none;
+    border: 1px solid #ccc;
+    border-radius: 8px 0 0 8px; /* Redondeo solo a la izquierda */
     outline: none;
     font-size: 1em;
 }
 
-#chat-form button {
-    background-color: #007bff; /* Azul primario */
+button {
+    background-color: #007bff;
     color: white;
     border: none;
-    padding: 12px 20px;
+    padding: 10px 20px;
+    border-radius: 0 8px 8px 0; /* Redondeo solo a la derecha */
     cursor: pointer;
     font-size: 1em;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s;
 }
 
-#chat-form button:hover {
+button:hover {
     background-color: #0056b3;
 }
 
-/* Estilo para la sugerencia */
-.suggestion-text {
-    color: #007bff; /* Un azul vibrante */
-    font-weight: bold;
+.show-solution-button {
+    border-radius: 5px; /* Redondeo completo para este botón */
+    padding: 8px 15px;
+    font-size: 0.9em;
+    background-color: #28a745; /* Verde */
+}
+
+.show-solution-button:hover {
+    background-color: #218838;
+}
+
+/* --- Indicador de "Escribiendo..." --- */
+#typing-indicator {
     font-style: italic;
-    margin-top: 15px; /* Espacio superior */
-    display: block; /* Para que ocupe su propia línea */
-    text-align: center;
+    color: #888;
 }
