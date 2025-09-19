@@ -7,10 +7,26 @@ import logging
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session, flash
 from dotenv import load_dotenv
 from openai import OpenAI
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
 from models import db, Prompt, ExerciseHistory, PredefinedExercise
 
 # Cargar variables de entorno desde .env
 load_dotenv()
+
+# --- Función para enviar email ---
+def send_access_key_email(student_email, access_key):
+    message = Mail(
+        from_email=os.getenv('SENDER_EMAIL'),
+        to_emails=student_email,
+        subject='Tu Clave de Acceso para el Tutor de IA',
+        html_content=f'<p>¡Hola!</p><p>Has recibido acceso a una sesión con el Tutor de IA.</p><p>Tu clave de acceso es: <strong>{access_key}</strong></p><p>Puedes acceder a tu sesión aquí: <a href="https://mi-tutor-ia-produccion.onrender.com/">https://mi-tutor-ia-produccion.onrender.com/</a></p>')
+    try:
+        sendgrid_client = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        response = sendgrid_client.send(message)
+        logger.info(f"Email sent to {student_email}, status code: {response.status_code}")
+    except Exception as e:
+        logger.error(f"Error sending email: {e}")
 
 app = Flask(__name__)
 
@@ -226,6 +242,9 @@ def admin_create_prompt():
                 db.session.add(new_prompt)
                 db.session.commit()
 
+                # Enviar el correo electrónico con la clave de acceso
+                send_access_key_email(student_email, access_key)
+
                 exercise_lines = exercises_text.split('\n') if exercises_text else []
                 added_exercises = 0
                 for i, line in enumerate(exercise_lines):
@@ -241,7 +260,7 @@ def admin_create_prompt():
                 if added_exercises > 0:
                     db.session.commit()
 
-                success_message = f"Prompt creado exitosamente. Clave de acceso: {access_key}"
+                success_message = f"Prompt creado para {student_email}. Se ha enviado un correo con la clave de acceso: {access_key}"
                 if added_exercises > 0:
                     success_message += f". Se agregaron {added_exercises} ejercicios predefinidos."
                 flash(success_message, "success")
