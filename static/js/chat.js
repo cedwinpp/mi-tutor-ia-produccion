@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (distance < 0) {
                 clearInterval(timerInterval);
                 timerElement.innerHTML = "Sesión Expirada";
-                userMessageInput.disabled = true;
-                chatForm.querySelector('button').disabled = true;
                 return;
             }
 
