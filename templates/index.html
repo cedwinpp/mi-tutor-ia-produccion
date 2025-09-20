@@ -4,16 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Tutor Inteligente - Acceso</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='1.1') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Bienvenido al Tutor Inteligente</h1>
-    <form action="/" method="post">
-        <label for="access_key">Introduce tu clave de acceso:</label><br>
-        <input type="text" id="access_key" name="access_key" required>
-        <button type="submit">Acceder</button>
-    </form>
-    {% if error %}
-        <p style="color: red;">{{ error }}</p>
-    {% endif %}
+    <div class="login-container">
+        <h1>Bienvenido al Tutor Inteligente</h1>
+        <form action="/" method="post" class="login-form">
+            <label for="access_key">Introduce tu clave de acceso:</label>
+            <input type="text" id="access_key" name="access_key" required>
+            <button type="submit">Acceder</button>
+        </form>
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>

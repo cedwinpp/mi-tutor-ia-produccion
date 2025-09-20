@@ -167,3 +167,41 @@ button:hover {
     font-style: italic;
     color: #888;
 }
+
+/* --- Página de Login --- */
+.login-container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    margin-top: 50px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #34495e;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
+}
+
+.login-form button {
+    width: 100%;
+    border-radius: 8px; /* Redondeo completo */
+}
+
+.error-message {
+    color: #dc3545; /* Rojo para errores */
+    margin-top: 15px;
+}
