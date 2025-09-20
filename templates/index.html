@@ -21,5 +21,14 @@
             <p class="error-message">{{ error }}</p>
         {% endif %}
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const accessKey = urlParams.get('access_key');
+            if (accessKey) {
+                document.getElementById('access_key').value = accessKey;
+            }
+        });
+    </script>
 </body>
 </html>

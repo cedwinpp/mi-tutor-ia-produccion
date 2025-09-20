@@ -16,11 +16,27 @@ load_dotenv()
 
 # --- Función para enviar email ---
 def send_access_key_email(student_email, access_key):
+    # Construye la URL de acceso directo
+    access_url = f"https://mi-tutor-ia-produccion.onrender.com/?access_key={access_key}"
+
+    # Contenido del correo mejorado
+    html_content = f'''
+        <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+            <h2 style="color: #007bff;">¡Bienvenido al Tutor de IA!</h2>
+            <p>Has recibido una invitación para una sesión de tutoría personalizada.</p>
+            <p>Para empezar, simplemente haz clic en el siguiente botón:</p>
+            <a href="{access_url}" style="background-color: #007bff; color: white; padding: 15px 25px; text-decoration: none; border-radius: 8px; display: inline-block; font-size: 18px; margin: 20px 0;">Acceder a la Sesión</a>
+            <p style="font-size: 14px; color: #555;">Si el botón no funciona, también puedes ir a la página de inicio y usar la siguiente clave de acceso:</p>
+            <p style="font-size: 20px; font-weight: bold; color: #333; background-color: #f2f2f2; padding: 10px; border-radius: 5px; display: inline-block;">{access_key}</p>
+        </div>
+    '''
+
     message = Mail(
         from_email=os.getenv('SENDER_EMAIL'),
         to_emails=student_email,
-        subject='Tu Clave de Acceso para el Tutor de IA',
-        html_content=f'<p>¡Hola!</p><p>Has recibido acceso a una sesión con el Tutor de IA.</p><p>Tu clave de acceso es: <strong>{access_key}</strong></p><p>Puedes acceder a tu sesión aquí: <a href="https://mi-tutor-ia-produccion.onrender.com/">https://mi-tutor-ia-produccion.onrender.com/</a></p>')
+        subject='Tu Acceso Personal al Tutor de IA',
+        html_content=html_content
+    )
     try:
         sendgrid_client = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
         response = sendgrid_client.send(message)
