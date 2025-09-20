@@ -205,3 +205,21 @@ button:hover {
     color: #dc3545; /* Rojo para errores */
     margin-top: 15px;
 }
+
+/* --- Botón de Vídeo --- */
+.video-button {
+    display: inline-block;
+    background-color: #c0392b; /* Un rojo YouTube */
+    color: white;
+    padding: 12px 18px;
+    margin-top: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.video-button:hover {
+    background-color: #a93226; /* Un rojo más oscuro */
+    color: white;
+}

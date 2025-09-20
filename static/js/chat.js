@@ -98,7 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', `${sender}-message`);
 
-        let processedMessage = message;
+        // --- LÓGICA PARA VÍDEOS ---
+        const videoRegex = /\\[video: (https?:\\/\\/[^\\s\\]]+)\\]/g;
+        let processedMessage = message.replace(videoRegex, (match, url) => {
+            return `<a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo Explicativo</a>`;
+        });
+        // --- FIN DE LA LÓGICA PARA VÍDEOS ---
 
         // Procesar etiquetas de color (manteniendo la funcionalidad si el prompt las genera)
         processedMessage = processedMessage.replace(/<black>/g, '<span class="black-text">');
