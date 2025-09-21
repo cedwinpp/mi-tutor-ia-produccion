@@ -18,7 +18,9 @@ javascript
               remainingSeconds--;
               const minutes = Math.floor(remainingSeconds / 60);
               const seconds = remainingSeconds % 60;
-              timerElement.innerHTML = Tiempo restante: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')};
+              // LÍNEA CORREGIDA: Se usa concatenación de strings para máxima compatibilidad
+              timerElement.innerHTML = 'Tiempo restante: ' + minutes.toString().padStart(2,
+  '0') + ':' + seconds.toString().padStart(2, '0');
           }, 1000);
       }
 
@@ -28,11 +30,13 @@ javascript
       });
 
       // Botones de "Mostrar Solución" de la lista de ejercicios
-      const exerciseSolutionButtons = document.querySelectorAll('#exercises-ul .show-solution-button');
+      const exerciseSolutionButtons = document.querySelectorAll('#exercises-ul
+  .show-solution-button');
       exerciseSolutionButtons.forEach((button, index) => {
           button.addEventListener('click', () => {
               const listItem = button.closest('li');
-              const exerciseText = listItem.querySelector('p:first-child').innerText.replace(/Ejercicio \d+:/, '').trim();
+              const exerciseText =
+  listItem.querySelector('p:first-child').innerText.replace(/Ejercicio \d+:/, '').trim();
               appendMessage('user', exerciseText);
               sendChatMessage(exerciseText, "get_solution");
               button.style.display = 'none';
@@ -89,7 +93,8 @@ javascript
           } else {
               const videoRegex = /\[video: (https?:\/\/[^\s\]]+)\]/g;
               let processedMessage = message.replace(videoRegex, (match, url) => {
-                  return <a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo Explicativo</a>;
+                  return <a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo
+  Explicativo</a>;
               });
               messageElement.innerHTML = processedMessage;
           }
@@ -104,4 +109,3 @@ javascript
           }
       }
   });
-  
