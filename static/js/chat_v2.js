@@ -1,8 +1,9 @@
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
       const chatForm = document.getElementById('chat-form');
       const userMessageInput = document.getElementById('user-message');
       const chatContainer = document.getElementById('chat-container');
       const accessKey = window.location.pathname.split('/').pop();
+      const exercisesList = document.getElementById('exercises-ul');
 
       console.log('Simplified chat script for final debug.');
 
@@ -24,8 +25,7 @@
               const response = await fetch('/api/chat', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ access_key: accessKey, user_message: userMessage
-  }),
+                  body: JSON.stringify({ access_key: accessKey, user_message: userMessage }),
               });
               const data = await response.json();
 
@@ -43,4 +43,20 @@
               chatContainer.appendChild(errorMessageElement);
           }
       });
+
+      // New functionality for the "Mostrar Solución" button
+      if (exercisesList) {
+          exercisesList.addEventListener('click', (e) => {
+              if (e.target && e.target.classList.contains('show-solution-button')) {
+                  e.preventDefault(); // Prevent any default button action
+
+                  const exerciseText = e.target.getAttribute('data-exercise');
+                  if (exerciseText) {
+                      // Copy the exercise text to the input field
+                      userMessageInput.value = exerciseText;
+                      userMessageInput.focus(); // Focus on the input for immediate sending
+                  }
+              }
+          });
+      }
   });

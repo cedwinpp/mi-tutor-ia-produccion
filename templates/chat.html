@@ -28,7 +28,7 @@
                     <li>
                         <p><strong>Ejercicio {{ loop.index }}:</strong> {{ exercise.exercise }}</p>
                         <p style="display: none;" class="solution-content"><strong>Solución:</strong> {{ exercise.solution }}</p>
-                        <button class="show-solution-button" data-exercise-index="{{ loop.index0 }}">Mostrar Solución</button>
+                        <button class="show-solution-button" data-exercise-index="{{ loop.index0 }}" data-exercise="{{ exercise.exercise }}">Mostrar Solución</button>
                     </li>
                 {% endfor %}
             </ul>
