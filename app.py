@@ -170,7 +170,7 @@ def api_chat():
     user_message = data.get('user_message', '')
     # Simplificamos la respuesta a un simple eco para depurar
     ai_response = f"Recibí tu mensaje: '{user_message}'"
-    return jsonify({'ai_response': ai_response}))
+    return jsonify({'ai_response': ai_response})
 
 # Ruta de administración
 @app.route('/admin')
