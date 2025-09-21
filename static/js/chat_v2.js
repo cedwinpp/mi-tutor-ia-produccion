@@ -5,14 +5,14 @@ javascript
       const chatContainer = document.getElementById('chat-container');
       const accessKey = window.location.pathname.split('/').pop();
 
-      console.log('Chat.js simplificado para depuración final.');
+      console.log('Simplified chat script for final debug.');
 
       chatForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const userMessage = userMessageInput.value;
           if (!userMessage) return;
 
-          // Añade el mensaje del usuario a la ventana
+          // Add user message to chat
           const userMessageElement = document.createElement('div');
           userMessageElement.classList.add('message', 'user-message');
           userMessageElement.innerText = userMessage;
@@ -20,7 +20,7 @@ javascript
           userMessageInput.value = '';
           chatContainer.scrollTop = chatContainer.scrollHeight;
 
-          // Envía el mensaje al backend y espera la respuesta de la IA
+          // Send to backend and wait for AI response
           try {
               const response = await fetch('/api/chat', {
                   method: 'POST',
@@ -30,18 +30,17 @@ javascript
               });
               const data = await response.json();
 
-              // Añade la respuesta de la IA a la ventana
+              // Add AI response to chat
               const aiMessageElement = document.createElement('div');
               aiMessageElement.classList.add('message', 'assistant-message');
-              aiMessageElement.innerHTML = data.ai_response; // Usamos innerHTML por si la
-  IA envía formato
+              aiMessageElement.innerHTML = data.ai_response;
               chatContainer.appendChild(aiMessageElement);
               chatContainer.scrollTop = chatContainer.scrollHeight;
           } catch (error) {
-              console.error('Error en el chat simplificado:', error);
+              console.error('Simplified chat error:', error);
               const errorMessageElement = document.createElement('div');
               errorMessageElement.classList.add('message', 'assistant-message');
-              errorMessageElement.innerText = 'Error de conexión.';
+              errorMessageElement.innerText = 'Connection error.';
               chatContainer.appendChild(errorMessageElement);
           }
       });
