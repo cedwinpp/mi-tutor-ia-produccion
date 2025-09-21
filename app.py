@@ -166,42 +166,11 @@ def chat(access_key):
 
 @app.route('/api/chat', methods=['POST'])
 def api_chat():
-    try:
-        data = request.get_json()
-        access_key = data['access_key']
-        user_message = data['user_message']
-        action = data.get('action')
-
-        prompt = Prompt.query.filter_by(access_key=access_key).first()
-        if not prompt:
-            return jsonify({'ai_response': 'Error: Clave de acceso no válida.'})
-        
-        time_elapsed = datetime.datetime.utcnow() - prompt.session_start_time
-        if time_elapsed.total_seconds() > SESSION_TIME_LIMIT_MINUTES * 60:
-            return jsonify({'ai_response': 'Tu sesión ha expirado. Por favor, contacta a tu tutor para una nueva sesión.'})
-
-        system_prompt = prompt.prompt_content
-        if action == "get_solution":
-            ai_response = get_ai_response(system_prompt + "\n\nPor favor, proporciona la solución paso a paso para el siguiente ejercicio:", user_message)
-        elif action == "initial_message":
-            ai_response = get_ai_response(system_prompt, "Hola, por favor, preséntate y saluda al alumno. Adicionalmente, indícale que puede seleccionar uno de los ejercicios de la lista de la izquierda o escribir uno directamente en el chat. Si no hay ejercicios, indícale que puede escribir uno directamente en el chat.")
-        else:
-            ai_response = get_ai_response(system_prompt, user_message)
-        
-        # Guardar en historial (lógica simplificada para el ejemplo)
-        new_history = ExerciseHistory(
-            access_key=access_key,
-            exercise_text=user_message, # Guardamos el mensaje del usuario como el ejercicio
-            solution_text=ai_response # Guardamos la respuesta completa de la IA
-        )
-        db.session.add(new_history)
-        db.session.commit()
-        
-        return jsonify({'ai_response': ai_response})
-    
-    except Exception as e:
-        logger.error(f"Error en api_chat: {e}")
-        return jsonify({'ai_response': 'Lo siento, ha ocurrido un error al procesar tu solicitud.'})
+    data = request.get_json()
+    user_message = data.get('user_message', '')
+    # Simplificamos la respuesta a un simple eco para depurar
+    ai_response = f"Recibí tu mensaje: '{user_message}'"
+    return jsonify({'ai_response': ai_response}))
 
 # Ruta de administración
 @app.route('/admin')
