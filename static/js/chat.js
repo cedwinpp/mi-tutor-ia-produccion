@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await sendChatMessage(userMessage);
     });
 
-    async function sendChatMessage(message, action = null, context = null) { // Removed context parameter
+    async function sendChatMessage(message, action = null) {
         let payload = {
             access_key: accessKey,
             user_message: message,
@@ -94,69 +94,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function appendMessage(sender, message, action = null) {
-        console.log("appendMessage called with sender:", sender, "message:", message, "action:", action); // Debugging
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', `${sender}-message`);
 
-        // --- LÓGICA PARA VÍDEOS ---
-        const videoRegex = /\\[video: (https?:\\/\\/[^\\s\\]]+)\\]/g;
-        let processedMessage = message.replace(videoRegex, (match, url) => {
-            return `<a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo Explicativo</a>`;
-        });
-        // --- FIN DE LA LÓGICA PARA VÍDEOS ---
-
-        // Procesar etiquetas de color (manteniendo la funcionalidad si el prompt las genera)
-        processedMessage = processedMessage.replace(/<black>/g, '<span class="black-text">');
-        processedMessage = processedMessage.replace(/<\/black>/g, '</span>');
-        processedMessage = processedMessage.replace(/<green>/g, '<span class="green-text">');
-        processedMessage = processedMessage.replace(/<\/green>/g, '</span>');
-
-        // Procesar etiqueta de sugerencia
-        processedMessage = processedMessage.replace(/<suggestion>/g, '<span class="suggestion-text">');
-        processedMessage = processedMessage.replace(/<\/suggestion>/g, '</span>');
-
-        // Si la acción es "get_solution", simplemente mostramos el mensaje como solución
-        if (action === "get_solution") {
-            messageElement.innerHTML = `<strong>Solución:</strong> ${processedMessage}`;
+        if (sender === 'user') {
+            messageElement.innerText = message;
         } else {
-            // Procesar ejercicio y solución usando "Ejercicio:" y "Solución:".
-            const exerciseSolutionSplit = processedMessage.split('Solución:');
-            let exerciseText = '';
-            let solutionText = '';
+            // --- LÓGICA PARA VÍDEOS ---
+            const videoRegex = /\\[video: (https?:\\\/\\\/[^\\s\\]+)\\]/g;
+            let processedMessage = message.replace(videoRegex, (match, url) => {
+                return `<a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo Explicativo</a>`;
+            });
+            // --- FIN DE LA LÓGICA PARA VÍDEOS ---
 
-            if (exerciseSolutionSplit.length > 1) {
-                const fullExercisePart = exerciseSolutionSplit[0];
-                const exerciseStart = fullExercisePart.indexOf('Ejercicio:');
-                if (exerciseStart !== -1) {
-                    exerciseText = fullExercisePart.substring(exerciseStart + 'Ejercicio:'.length).trim();
-                } else {
-                    exerciseText = fullExercisePart.trim();
-                }
-                
-                solutionText = exerciseSolutionSplit.slice(1).join('Solución:').trim();
-
-                const exerciseDiv = document.createElement('div');
-                exerciseDiv.innerHTML = `<strong>Ejercicio:</strong> ${exerciseText}`;
-                messageElement.appendChild(exerciseDiv);
-
-                const solutionDiv = document.createElement('div');
-                solutionDiv.innerHTML = `<strong>Solución:</strong> ${solutionText}`;
-                solutionDiv.style.display = 'none';
-                solutionDiv.classList.add('solution-content');
-                messageElement.appendChild(solutionDiv);
-
-                const showSolutionButton = document.createElement('button');
-                showSolutionButton.innerText = 'Mostrar Solución';
-                showSolutionButton.classList.add('show-solution-button');
-                showSolutionButton.addEventListener('click', () => {
-                    sendChatMessage(exerciseText, "get_solution");
-                    showSolutionButton.style.display = 'none';
-                });
-                messageElement.appendChild(showSolutionButton);
-
-            } else {
-                messageElement.innerHTML = processedMessage;
+            // El resto del procesamiento solo para mensajes del asistente
+            if (action === "get_solution") {
+                processedMessage = `<strong>Solución:</strong> ${processedMessage}`;
             }
+
+            messageElement.innerHTML = processedMessage;
         }
         
         chatContainer.appendChild(messageElement);
