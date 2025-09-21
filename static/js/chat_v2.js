@@ -4,108 +4,45 @@ javascript
       const userMessageInput = document.getElementById('user-message');
       const chatContainer = document.getElementById('chat-container');
       const accessKey = window.location.pathname.split('/').pop();
-      const timerElement = document.getElementById('timer');
 
-      // Función del temporizador
-      if (timerElement) {
-          let remainingSeconds = parseInt(timerElement.dataset.remainingSeconds, 10);
-          const timerInterval = setInterval(() => {
-              if (remainingSeconds <= 0) {
-                  clearInterval(timerInterval);
-                  timerElement.innerHTML = "Sesión Expirada";
-                  return;
-              }
-              remainingSeconds--;
-              const minutes = Math.floor(remainingSeconds / 60);
-              const seconds = remainingSeconds % 60;
-              // LÍNEA CORREGIDA: Se usa concatenación de strings para máxima compatibilidad
-              timerElement.innerHTML = 'Tiempo restante: ' + minutes.toString().padStart(2,
-  '0') + ':' + seconds.toString().padStart(2, '0');
-          }, 1000);
-      }
+      console.log('Chat.js simplificado para depuración final.');
 
-      // Mensaje inicial de la IA
-      window.addEventListener('load', () => {
-          sendChatMessage("Hola", "initial_message");
-      });
-
-      // Botones de "Mostrar Solución" de la lista de ejercicios
-      const exerciseSolutionButtons = document.querySelectorAll('#exercises-ul
-  .show-solution-button');
-      exerciseSolutionButtons.forEach((button, index) => {
-          button.addEventListener('click', () => {
-              const listItem = button.closest('li');
-              const exerciseText =
-  listItem.querySelector('p:first-child').innerText.replace(/Ejercicio \d+:/, '').trim();
-              appendMessage('user', exerciseText);
-              sendChatMessage(exerciseText, "get_solution");
-              button.style.display = 'none';
-          });
-      });
-
-      // Envío del formulario del chat
       chatForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           const userMessage = userMessageInput.value;
           if (!userMessage) return;
-          appendMessage('user', userMessage);
+
+          // Añade el mensaje del usuario a la ventana
+          const userMessageElement = document.createElement('div');
+          userMessageElement.classList.add('message', 'user-message');
+          userMessageElement.innerText = userMessage;
+          chatContainer.appendChild(userMessageElement);
           userMessageInput.value = '';
-          await sendChatMessage(userMessage);
-      });
-
-      // Función para enviar mensajes al backend
-      async function sendChatMessage(message, action = null) {
-          const payload = { access_key: accessKey, user_message: message };
-          if (action) {
-              payload.action = action;
-          }
-
-          const typingIndicator = document.createElement('div');
-          typingIndicator.id = 'typing-indicator';
-          typingIndicator.classList.add('message', 'assistant-message');
-          typingIndicator.innerText = 'Escribiendo...';
-          chatContainer.appendChild(typingIndicator);
           chatContainer.scrollTop = chatContainer.scrollHeight;
 
+          // Envía el mensaje al backend y espera la respuesta de la IA
           try {
               const response = await fetch('/api/chat', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload),
+                  body: JSON.stringify({ access_key: accessKey, user_message: userMessage
+  }),
               });
               const data = await response.json();
-              document.getElementById('typing-indicator').remove();
-              appendMessage('assistant', data.ai_response, action);
+
+              // Añade la respuesta de la IA a la ventana
+              const aiMessageElement = document.createElement('div');
+              aiMessageElement.classList.add('message', 'assistant-message');
+              aiMessageElement.innerHTML = data.ai_response; // Usamos innerHTML por si la
+  IA envía formato
+              chatContainer.appendChild(aiMessageElement);
+              chatContainer.scrollTop = chatContainer.scrollHeight;
           } catch (error) {
-              console.error('Error sending message:', error);
-              document.getElementById('typing-indicator').remove();
-              appendMessage('assistant', 'Lo siento, ha ocurrido un error de conexión.');
+              console.error('Error en el chat simplificado:', error);
+              const errorMessageElement = document.createElement('div');
+              errorMessageElement.classList.add('message', 'assistant-message');
+              errorMessageElement.innerText = 'Error de conexión.';
+              chatContainer.appendChild(errorMessageElement);
           }
-      }
-
-      // Función para añadir mensajes a la ventana del chat
-      function appendMessage(sender, message, action = null) {
-          const messageElement = document.createElement('div');
-          messageElement.classList.add('message', ${sender}-message);
-
-          if (sender === 'user') {
-              messageElement.innerText = message;
-          } else {
-              const videoRegex = /\[video: (https?:\/\/[^\s\]]+)\]/g;
-              let processedMessage = message.replace(videoRegex, (match, url) => {
-                  return <a href="${url}" target="_blank" class="video-button">▶️ Ver Vídeo
-  Explicativo</a>;
-              });
-              messageElement.innerHTML = processedMessage;
-          }
-
-          chatContainer.appendChild(messageElement);
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-
-          if (typeof MathJax !== 'undefined') {
-              MathJax.typesetPromise([messageElement]).catch(function (err) {
-                  console.log('MathJax error: ', err.message);
-              });
-          }
-      }
+      });
   });
