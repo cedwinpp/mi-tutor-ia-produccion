@@ -1,4 +1,3 @@
-javascript
   document.addEventListener('DOMContentLoaded', () => {
       const chatForm = document.getElementById('chat-form');
       const userMessageInput = document.getElementById('user-message');
